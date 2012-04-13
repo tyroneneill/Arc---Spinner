@@ -20,6 +20,8 @@ package com.tyroneneill.components.spinners
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	import spark.primitives.Graphic;
 
 	/**
@@ -29,7 +31,7 @@ package com.tyroneneill.components.spinners
 	 *    which seems to have dissapeared off the web.
 	 *
 	 *  - The goal here is to be simple and performant.
-	 * 
+	 *
 	 *  - You spin me right round
 	 *
 	 * @author tyroneneill
@@ -132,6 +134,16 @@ package com.tyroneneill.components.spinners
 
 		//------------------------------------------------------------------------------
 		//
+		//   Protected Properties 
+		//
+		//------------------------------------------------------------------------------
+
+		protected var spinDelay:Number;
+
+		protected var spinTimer:Timer;
+
+		//------------------------------------------------------------------------------
+		//
 		//   Private Properties 
 		//
 		//------------------------------------------------------------------------------
@@ -175,6 +187,8 @@ package com.tyroneneill.components.spinners
 			if (!running)
 				return;
 
+			running = false;
+
 			this.removeEventListener(Event.ENTER_FRAME, updateSnake);
 			running = false;
 		}
@@ -200,8 +214,7 @@ package com.tyroneneill.components.spinners
 				drawCircle(
 					(radiusPlusCircle + Math.sin(radians * i) * radius), 
 					(radiusPlusCircle + Math.cos(radians * i) * radius), 
-					(i * alphaChange)
-				);
+					(i * alphaChange));
 			}
 			positionSnake();
 		}
@@ -214,7 +227,10 @@ package com.tyroneneill.components.spinners
 
 		private function drawCircle(xPos:Number, yPos:Number, alpha:Number):void
 		{
-			const drawAlpha:Number = clockwise ? (1 - (alpha)) : alpha;
+			const drawAlpha:Number = clockwise 
+				? (1 - (alpha)) 
+				: alpha;
+
 			const tg:Graphics = holder.graphics;
 			tg.beginFill(fillColor, drawAlpha);
 			tg.drawCircle(xPos, yPos, lineWidth);
